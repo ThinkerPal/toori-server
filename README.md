@@ -13,13 +13,13 @@ Instead of installing toori-server on the host, it can be deployed as a Docker c
 Pull from GHCR:
 
 ```shell
-sudo docker pull ghcr.io/kokseen1/toori-server:latest
+sudo docker pull docker pull ghcr.io/thinkerpal/toori-server:1.1
 ```
 
 Run the container:
 
 ```shell
-sudo docker run -d --cap-add=NET_ADMIN -p 80:80 ghcr.io/kokseen1/toori-server
+sudo docker run -d --cap-add=NET_ADMIN -p 80:80 ghcr.io/thinkerpal/toori-server:1.1
 ```
 
 #### HTTPS
