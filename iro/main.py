@@ -1,6 +1,5 @@
 import struct
 import socket
-from collections import deque
 import socketio
 from scapy.all import (
     AsyncSniffer,
@@ -27,7 +26,7 @@ app.config["CORS_SUPPORTS_CREDENTIALS"] = True
 sio = socketio.AsyncServer(async_mode="sanic", cors_allowed_origins=[])
 sio.attach(app)
 
-packets = deque()
+packets = asyncio.Queue()
 
 return_nat = dict()
 forward_nat = dict()
@@ -167,19 +166,15 @@ def disconnect(sid):
 
 
 def handle_inbound_packet(pkt):
-    packets.appendleft(pkt[IP])
+    packets.put_nowait(pkt[IP])
 
 
 async def background_sender(app):
     while True:
-        await asyncio.sleep(0)
-
         sid = None
 
-        if len(packets) == 0:
-            continue
-
-        pkt = packets.pop()
+        pkt = await packets.get()
+        packets.task_done()
 
         if pkt.haslayer(TCP) or pkt.haslayer(UDP):
 
